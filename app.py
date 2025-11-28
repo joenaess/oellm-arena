@@ -11,6 +11,75 @@ RESULTS_FILE = "arena_results.csv"
 
 st.set_page_config(layout="wide", page_title="OELLM Arena")
 
+# --- EXAMPLE PROMPTS DATABASE (Continuation focused) ---
+EXAMPLE_PROMPTS = {
+    "Icelandic": [
+        "Einu sinni var lítill strákur sem bjó í ",
+        "Helstu einkenni íslenskrar náttúru eru ",
+        "Hér er uppskrift að góðum pönnukökum: "
+    ],
+    "Swedish": [
+        "Det var en gång en gammal stuga mitt i ",
+        "Det viktigaste för att lyckas med studier är att ",
+        "Ingredienser för en klassisk kladdkaka: "
+    ],
+    "Danish": [
+        "Der var engang en konge, som boede i et slot lavet af ",
+        "København er kendt for mange ting, blandt andet ",
+        "Her er en liste over ting, man skal huske til strandturen: "
+    ],
+    "Norwegian (Bokmål)": [
+        "Langt mot nord, der vinteren varer lenge, bodde det ",
+        "Oljefondet har hatt stor betydning for norsk økonomi fordi ",
+        "Slik lager du verdens beste vafler: "
+    ],
+    "Finnish": [
+        "Olipa kerran kaukaisessa metsässä pieni ",
+        "Suomen koulujärjestelmä on tunnettu siitä, että ",
+        "Tässä on resepti perinteiseen karjalanpiirakkaan: "
+    ],
+    "German": [
+        "Es war einmal ein Ritter, der wollte ",
+        "Die wichtigste Erfindung des 21. Jahrhunderts ist ",
+        "Zutaten für einen perfekten Apfelstrudel: "
+    ],
+    "Dutch": [
+        "Er was eens een kleine kat die hield van ",
+        "Amsterdam is een stad vol grachten en ",
+        "Het recept voor de beste stroopwafels begint met: "
+    ],
+    "Spanish": [
+        "Había una vez en un pueblo lejano ",
+        "La importancia de la dieta mediterránea radica en ",
+        "Lista de ingredientes para una paella valenciana: "
+    ],
+    "Italian": [
+        "C'era una volta un falegname che viveva ",
+        "Il Rinascimento è stato un periodo cruciale perché ",
+        "Per preparare una vera pizza napoletana serve: "
+    ],
+    "Portuguese": [
+        "Era uma vez um navegador que sonhava em ",
+        "O fado é uma música tradicional que expressa ",
+        "Ingredientes para um bolo de cenoura com chocolate: "
+    ],
+    "Romanian": [
+        "A fost odată ca niciodată un împărat care ",
+        "Delta Dunării este un loc unic în Europa datorită ",
+        "Rețetă pentru mămăligă cu brânză și smântână: "
+    ],
+    "Catalan": [
+        "Hi havia una vegada un drac que vivia a ",
+        "Barcelona és famosa per la seva arquitectura i ",
+        "Ingredients per fer pa amb tomàquet: "
+    ],
+    "Basque": [
+        "Bazen behin, mendi altu baten gailurrean, ",
+        "Euskararen jatorria ezezaguna da, baina ",
+        "Marmitakoa prestatzeko osagaiak hauek dira: "
+    ]
+}
+
 # --- INITIALIZE SESSION STATE ---
 if 'generated' not in st.session_state:
     st.session_state.generated = False
@@ -29,31 +98,84 @@ if 'swap_models' not in st.session_state:
 if 'last_winner' not in st.session_state:
     st.session_state.last_winner = ""
 if 'current_language' not in st.session_state:
-    st.session_state.current_language = ""
+    st.session_state.current_language = "Swedish" # Default
+if 'prompt_text' not in st.session_state:
+    st.session_state.prompt_text = ""
 
 # --- SIDEBAR: SETUP ---
-st.sidebar.title("⚙️ Language Setup")
+st.sidebar.title("⚙️ Configuration")
 st.sidebar.markdown("Choose a language to begin.")
 
+# Select Language
 selected_language = st.sidebar.selectbox(
     "Select Language", 
-    sorted(list(MODELS_DB.keys()))
+    sorted(list(MODELS_DB.keys())),
+    index=sorted(list(MODELS_DB.keys())).index(st.session_state.current_language) if st.session_state.current_language in MODELS_DB else 0
 )
 
-# --- MAIN PAGE: GENERATION ---
+# Update language in session if changed
+if selected_language != st.session_state.current_language:
+    st.session_state.current_language = selected_language
+    st.session_state.generated = False
+    st.session_state.prompt_text = "" 
+    st.rerun()
+
+st.sidebar.divider()
+
+# --- ADVANCED PARAMETERS ---
+with st.sidebar.expander("🛠️ Generation Settings", expanded=False):
+    st.caption("Adjust these to ensure fair comparisons.")
+    
+    # Min New Tokens: Critical for base models to ensure they don't stop early
+    min_tokens = st.slider("Min New Tokens", 10, 100, 30, help="Forces the model to write at least this many words. Prevents one model from outputting 'Yes' while the other writes a novel.")
+    
+    # Max New Tokens
+    max_tokens = st.slider("Max New Tokens", 50, 512, 256, help="Maximum length of the generated response.")
+    
+    # Repetition Penalty: Base models love to repeat loops. 1.2 is usually safer than 1.0
+    rep_penalty = st.slider("Repetition Penalty", 1.0, 2.0, 1.2, step=0.05, help="Higher values prevent the model from repeating the same sentence.")
+    
+    # Temperature
+    temperature = st.slider("Temperature", 0.1, 1.5, 0.7, step=0.1, help="Creativity. Lower is more deterministic.")
+
+
+# --- MAIN PAGE ---
 st.title("⚔️ OELLM Arena")
-st.markdown(f"**Language:** {selected_language}")
-st.markdown("Enter a prompt. The system will randomly select two AI models. Vote for the one thta shows best fluency in the selected language!")
+st.markdown(f"**Current Language:** {selected_language}")
 
-user_prompt = st.text_area("Enter your prompt:", height=100)
+# --- 1. MODEL NATURE DISCLAIMER ---
+with st.expander("ℹ️ **READ THIS FIRST: How to prompt Base Models**", expanded=True):
+    st.markdown("""
+    **These are Monolingual Base Models, not Chatbots.**
+    * 🚫 **Don't ask questions** (e.g., *"What is the capital of Sweden?"*). They may get confused or just repeat the question.
+    * ✅ **DO write the start of a sentence** (e.g., *"The capital of Sweden is Stockholm, which is famous for..."*).
+    * **Think "Auto-Complete":** You start the story, the AI finishes it.
+    """)
 
-if st.button("Generate Response"):
+# --- 2. EXAMPLE PROMPTS ---
+st.markdown("### ✍️ Start writing or choose an example")
+cols = st.columns(3)
+example_list = EXAMPLE_PROMPTS.get(selected_language, ["", "", ""])
+
+def set_prompt(text):
+    st.session_state.prompt_text = text
+
+if cols[0].button("📖 Story Starter", use_container_width=True):
+    set_prompt(example_list[0])
+if cols[1].button("🧠 Fact Completion", use_container_width=True):
+    set_prompt(example_list[1])
+if cols[2].button("🍳 Recipe/List", use_container_width=True):
+    set_prompt(example_list[2])
+
+# --- 3. INPUT AREA ---
+user_prompt = st.text_area("Your Prompt (Start a sentence...):", key="prompt_text", height=100)
+
+if st.button("Generate Response", type="primary"):
     if not user_prompt:
         st.error("Please enter a prompt first.")
     else:
         st.session_state.vote_submitted = False
         st.session_state.last_winner = ""
-        st.session_state.current_language = selected_language
         
         with st.spinner('Selecting models and generating...'):
             # 1. Randomize display order
@@ -68,11 +190,19 @@ if st.button("Generate Response"):
             try:
                 # Load A (MultiSynt) on GPU 0
                 pipe_a = get_pipeline(chosen_multisynt, 0)
-                res_a = generate_text(pipe_a, user_prompt)
+                res_a = generate_text(pipe_a, user_prompt, 
+                                    min_new_tokens=min_tokens,
+                                    max_new_tokens=max_tokens,
+                                    repetition_penalty=rep_penalty,
+                                    temperature=temperature)
                 
                 # Load B (HPLT) on GPU 1
                 pipe_b = get_pipeline(chosen_hplt, 1)
-                res_b = generate_text(pipe_b, user_prompt)
+                res_b = generate_text(pipe_b, user_prompt,
+                                    min_new_tokens=min_tokens,
+                                    max_new_tokens=max_tokens,
+                                    repetition_penalty=rep_penalty,
+                                    temperature=temperature)
                 
                 st.session_state.model_a_name = chosen_multisynt
                 st.session_state.model_b_name = chosen_hplt
@@ -91,6 +221,10 @@ if st.button("Generate Response"):
 # --- DISPLAY & VOTING ---
 if st.session_state.generated and not st.session_state.vote_submitted:
     st.divider()
+    
+    st.markdown("### 🗳️ Vote for Fluency")
+    st.caption("Which model produced the most **grammatically correct** and **natural-sounding** continuation? Ignore factual errors.")
+
     col1, col2 = st.columns(2)
     
     if st.session_state.swap_models:
@@ -101,24 +235,22 @@ if st.session_state.generated and not st.session_state.vote_submitted:
         right_text = st.session_state.output_b
 
     with col1:
-        st.subheader("Model 1")
         st.info(left_text)
-        if st.button("👈 Vote for Model 1", key="vote_left"):
+        if st.button("👈 Better Fluency (Model 1)", key="vote_left", use_container_width=True):
             winner_source = "HPLT" if st.session_state.swap_models else "MultiSynt"
             st.session_state.last_winner = winner_source
             st.session_state.vote_submitted = True
             st.rerun()
 
     with col2:
-        st.subheader("Model 2")
         st.info(right_text)
-        if st.button("Vote for Model 2 👉", key="vote_right"):
+        if st.button("Better Fluency (Model 2) 👉", key="vote_right", use_container_width=True):
             winner_source = "MultiSynt" if st.session_state.swap_models else "HPLT"
             st.session_state.last_winner = winner_source
             st.session_state.vote_submitted = True
             st.rerun()
         
-    if st.button("🤝 Tie / Both Good / Both Bad", key="vote_tie"):
+    if st.button("🤝 Tie / Equal Fluency", key="vote_tie", use_container_width=True):
         st.session_state.last_winner = "Tie"
         st.session_state.vote_submitted = True
         st.rerun()
@@ -127,7 +259,6 @@ if st.session_state.generated and not st.session_state.vote_submitted:
 if st.session_state.vote_submitted:
     vote_val = st.session_state.last_winner
     
-    # Calculate position for log
     vote_position = "Tie"
     if vote_val != "Tie":
         if vote_val == "MultiSynt":
@@ -135,18 +266,16 @@ if st.session_state.vote_submitted:
         else:
             vote_position = "Left" if st.session_state.swap_models else "Right"
 
-    # Save Data
     file_exists = os.path.isfile(RESULTS_FILE)
     with open(RESULTS_FILE, mode='a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        # Added 'Language' column to header
         if not file_exists:
             writer.writerow(["Timestamp", "Language", "Prompt", "Model_A_Name", "Model_B_Name", "Output_A", "Output_B", "Swapped", "Winner_Position", "Winner_Source"])
         
         writer.writerow([
             datetime.now(), 
-            st.session_state.current_language, # Save the language!
-            user_prompt, 
+            st.session_state.current_language, 
+            st.session_state.prompt_text, 
             st.session_state.model_a_name, 
             st.session_state.model_b_name, 
             st.session_state.output_a, 
@@ -178,9 +307,10 @@ if st.session_state.vote_submitted:
         st.markdown(f"**HPLT Model (B)**")
         st.code(clean_name(st.session_state.model_b_name))
             
-    if st.button("Start New Round"):
+    if st.button("Start New Round", type="primary"):
         st.session_state.generated = False
         st.session_state.vote_submitted = False
+        st.session_state.prompt_text = ""
         st.rerun()
 
 # --- RESULTS ANALYSIS ---
@@ -190,13 +320,10 @@ st.subheader("📊 Results & Analytics")
 if os.path.exists(RESULTS_FILE):
     df = pd.read_csv(RESULTS_FILE)
     if not df.empty:
-        # Filter out ties for win-rate calculations
         clean_df = df[df['Winner_Source'] != 'Tie']
         
         if not clean_df.empty:
-            
-            # --- 1. OVERALL ---
-            st.markdown("### 1. Overall Win Rate")
+            st.markdown("### 1. Overall Fluency Preference")
             overall_counts = clean_df['Winner_Source'].value_counts()
             col1, col2 = st.columns([2, 1])
             with col1:
@@ -206,50 +333,33 @@ if os.path.exists(RESULTS_FILE):
                 st.caption(f"Total valid votes: {len(clean_df)}")
 
             st.divider()
-
-            # --- 2. PER LANGUAGE ---
-            st.markdown("### 2. Win Rate by Language")
-            
-            # Create a pivot table: Language as rows, Winner_Source as columns
+            st.markdown("### 2. Preference by Language")
             lang_stats = pd.crosstab(clean_df['Language'], clean_df['Winner_Source'])
-            
-            # Calculate percentages for tooltips/display
-            lang_pct = lang_stats.div(lang_stats.sum(1), axis=0) * 100
-            
             col_a, col_b = st.columns([2, 1])
             with col_a:
-                st.bar_chart(lang_stats) # Stacked bar chart by default
+                st.bar_chart(lang_stats)
             with col_b:
-                st.dataframe(lang_stats) # Show raw counts
-                st.caption("Vote counts per language")
+                st.dataframe(lang_stats)
 
             st.divider()
-
-            # --- 3. MULTISYNT TYPE PREFERENCE ---
-            st.markdown("### 3. MultiSynt Type Preference (Opus vs Tower)")
-            
+            st.markdown("### 3. MultiSynt Type Preference")
             def extract_type(name):
                 if pd.isna(name): return "Unknown"
                 if "opus" in name.lower(): return "Opus"
                 if "tower" in name.lower(): return "Tower"
                 return "Other"
             
-            # Filter only MultiSynt wins to see which type wins more often
             ms_wins = clean_df[clean_df['Winner_Source'] == 'MultiSynt'].copy()
-            
             if not ms_wins.empty:
                 ms_wins['Architecture'] = ms_wins['Model_A_Name'].apply(extract_type)
                 type_counts = ms_wins['Architecture'].value_counts()
-                
                 col_x, col_y = st.columns([2, 1])
                 with col_x:
                     st.bar_chart(type_counts, color="#1E90FF")
                 with col_y:
                     st.write(type_counts)
-                    st.caption("Total MultiSynt Wins by Type")
             else:
                 st.info("No MultiSynt wins recorded yet.")
-
         else:
             st.write("No clear votes yet (only ties).")
     else:
