@@ -43,7 +43,7 @@ selected_language = st.sidebar.selectbox(
 # --- MAIN PAGE: GENERATION ---
 st.title("⚔️ OELLM Arena")
 st.markdown(f"**Language:** {selected_language}")
-st.markdown("Enter a prompt. The system will randomly select two AI models. Vote for the best one!")
+st.markdown("Enter a prompt. The system will randomly select two AI models. Vote for the one thta shows best fluency in the selected language!")
 
 user_prompt = st.text_area("Enter your prompt:", height=100)
 
