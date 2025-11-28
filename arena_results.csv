@@ -17,3 +17,15 @@ En korg av grädde.
 En korg av ris och ägg.
 En korg av grönsaker.
 En korg av fisk",True,Tie,Tie
+2025-11-28 09:51:02.426297,Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon,MultiSynt/nemotron-cc-swedish-tower9b,HPLT/hplt2c_swe_checkpoints,"Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon vaknade han och gick till kylskåpet för att hitta lite choklad, men när han kom dit upptäckte han att den var borta! Vad hände? Ta reda på det i denna roliga och knasiga historia om en guldfisk.
+
+Om författaren
+
+Helen Cresswell är utbildad lärare och har arbetat inom barnboksförlag i över 20 år. Hon skriver bilderböcker och böcker med text på olika nivåer, inklusive den mycket framgångsrika serien ""The Story Box"" och ""The Secret Garden"". Helen bor i London, England.","Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon hittade han inte sin lilla skatt, han hade tappat den i toaletten!
+Då kom hans bästa vän fram till honom med en spade och sa:
+- Du kan gräva upp fisken igen om du vill, men då får du allt vara snabb för snart är det mörkt!
+Guldfisken tänkte att det skulle bli en lång dag så han skyndade sig att gräva.
+Han slet ut spaden ur toaletthålet och började gräva, men han hann bara några decimeter innan spaden trillade ner i vattnet och fiskens skatt försvann.
+Vännen tittade förundrat på Guldfisken som kämpade för att hitta skatten, men han visste ju inte ens var han grävt.
+- Varför grävde du inte lite djupare? frågade han.
+- Jag trodde du grävde",False,Right,HPLT
