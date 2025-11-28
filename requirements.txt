@@ -1,0 +1,8 @@
+streamlit
+torch
+transformers
+accelerate
+pandas
+scikit-learn
+protobuf
+sentencepiece
