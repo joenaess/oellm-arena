@@ -1,31 +1,62 @@
-Timestamp,Prompt,Model_A_Name,Model_B_Name,Output_A,Output_B,Swapped,Winner_Position,Winner_Source
-2025-11-28 09:37:16.008736,Det var en gång en guldfisk som,MultiSynt/nemotron-cc-icelandic-tower9b,HPLT/hplt2c_isl_checkpoints,"Det var en gång en guldfisk som är du för att de t.
+Timestamp,Language,Prompt,Model_A_Name,Model_B_Name,Output_A,Output_B,Swapped,Winner_Position,Winner_Source
+2025-11-28 09:59:48.669238,Swedish,Det var en gång en guldfisk som älskade choklad och banan. En morgon,MultiSynt/nemotron-cc-swedish-tower9b,HPLT/hplt2c_swe_checkpoints,"Det var en gång en guldfisk som älskade choklad och banan. En morgon vaknade han upp till att hans guldfiskvärld stod i lågor. Hans chokladkaka och banan blev stulna av en svart katt som hade förklätt sig till en mus. Efter att ha blivit jagad över hela världen av katten och musen, hittar guldfisken äntligen sin väg hem och möter sin bästa vän, en hund, på vägen.
 
-Sæktu rafbókina Det var en gången í PDF-sniði eða lestu bækur á netinu í PDF-, EPUB- og Mobi-sniði. Smelltu á hnappinn Sækja eða Lesa á netinu til að fá bókina Det var en gången í PDF-sniði ókeypis núna.
+Varje dag ser vi fram emot att se hur det går för våra husdjur och deras hälsa. Många människor ger sina husdjur den bästa maten och håller dem inomhus under dagen, men har du någonsin tänkt på vad ditt husdjurs kost består av? Det finns mycket mer med din hunds eller katts kost än bara maten de äter. Förutom maten kan det också finnas mediciner och vitaminer som ges till djuret för att hålla det friskt. Hus","Det var en gång en guldfisk som älskade choklad och banan. En morgon kom den till sin pappa som sa att han måste gå ut i köket och se om det fanns några ägg i hans frukostmüsli.
+- Det finns bara ett ägg, svarade guldfisken. Det är inte ditt!
+När de gick till pappan för att berätta vad som hänt blev de såklart inte trodda. Det är ju pappa som gjort fel! Men när de gick hemifrån var ägget borta.
+Så här fortsätter historien tills guldfisken blir riktigt arg. Den slänger sig framför pappan, trampar honom på foten och skriker:
+- Pappa! Du har dödat min son!
+Författare: Lena Lilleste
+ISBN: 9789129690544",False,Left,MultiSynt
+2025-11-28 10:15:03.074225,Swedish,"De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter.",MultiSynt/nemotron-cc-swedish-tower72b,HPLT/hplt2c_swe_checkpoints,"De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter.
 
-Þessi texti lýsir nýrri tegund af „óhreyfanlegum“ kerfum sem gera kleift að nota vélrænt nám til að stjórna hlutum með því að nota líkamlegt umhverfi þeirra, svo sem fætur, hjól, hurðir, glugga, veggspjöld, ljós o.s.frv. Það er ótrúlega auðvelt að láta kerfin hafa samskipti við hvert annað og við menn","Det var en gång en guldfisk som hade det så bra, och hon fick ha sitt fiske i fred.
-Men det gick inte långt förrän hon blev sjuk och hon döptes.
-Det var en gång en liten guldfisk som hade ett hål i sin kropp. Hon fanns här på jorden, men hon hade fått till sig ett nytt hjärta.
-Hun hade gjort sig fri, men nu var tiden inne att ta ett litet steg bakåt.
-Någon hadde sagt att hun kunde ta ett litet steg framåt.
-Hon skulle bara lägga sitt hjärta i en korg och sedan gå vidare.
-Så vart hon än väntat.
-En korg med smultroner.
-En korg av mjölk.
-En korg av socker.
-En korg av grädde.
-En korg av ris och ägg.
-En korg av grönsaker.
-En korg av fisk",True,Tie,Tie
-2025-11-28 09:51:02.426297,Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon,MultiSynt/nemotron-cc-swedish-tower9b,HPLT/hplt2c_swe_checkpoints,"Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon vaknade han och gick till kylskåpet för att hitta lite choklad, men när han kom dit upptäckte han att den var borta! Vad hände? Ta reda på det i denna roliga och knasiga historia om en guldfisk.
+Men det finns några som är värda ett besök för sig själva. Till exempel Stockholmsoperan och Kungliga slottet.
 
-Om författaren
+Det är också värt att se Skansen, ett friluftsmuseum med gamla träbyggnader från 1600-talet. Det ligger nära Kungliga slottet. Du kan hitta mer information om museerna på vår sida om Stockholm.
 
-Helen Cresswell är utbildad lärare och har arbetat inom barnboksförlag i över 20 år. Hon skriver bilderböcker och böcker med text på olika nivåer, inklusive den mycket framgångsrika serien ""The Story Box"" och ""The Secret Garden"". Helen bor i London, England.","Det var en gång en guldfisk som var stor och fet och älskade chokjlad och lakrits. En morgon hittade han inte sin lilla skatt, han hade tappat den i toaletten!
-Då kom hans bästa vän fram till honom med en spade och sa:
-- Du kan gräva upp fisken igen om du vill, men då får du allt vara snabb för snart är det mörkt!
-Guldfisken tänkte att det skulle bli en lång dag så han skyndade sig att gräva.
-Han slet ut spaden ur toaletthålet och började gräva, men han hann bara några decimeter innan spaden trillade ner i vattnet och fiskens skatt försvann.
-Vännen tittade förundrat på Guldfisken som kämpade för att hitta skatten, men han visste ju inte ens var han grävt.
-- Varför grävde du inte lite djupare? frågade han.
-- Jag trodde du grävde",False,Right,HPLT
+Om du har ont om tid kan du också prova att vandra längs Stockholms skogsväg. Denna vandring tar dig till ett antal pittoreska platser i staden. Det finns många av dessa stigar runt om i Stockholm.
+
+Stockholm är också känd för sina många parker och trädgårdar. Parken vid Stockholms zoo är särskilt populär bland turister. Många andra parker finns också runt om i staden.
+
+Staden har ett bra transportsystem, vilket gör det enkelt","De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter. Det är därför vi har gjort en lista över de 25 bästa sevärdheterna i Stockholm för att ge dig den ultimata guiden till Stockholms bästa sevärdheter.
+Här är våra toppval av de 25 bästa sevärdheterna i Stockholm:
+1. Gamla stan (Stockholm)
+Gamla stan är en av de mest kända och besökta sevärdheterna i Stockholm, och det finns ingen bättre plats att börja din sightseeing på än den här historiska platsen. Gamla stan ligger mitt i staden, vilket gör den till en perfekt startpunkt för sightseeing, oavsett om du planerar att utforska hela Gamla stan eller bara några av dess distrikt.
+Denna stadskärna har flera viktiga landmärken som Riddarholmen och Stortorget, som båda ligger inom gångavstånd från Gamla stan.
+Dessutom erbjuder Gamla",False,Left,MultiSynt
+2025-11-28 10:15:19.297291,Swedish,"De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter.",MultiSynt/nemotron-cc-swedish-tower72b,HPLT/hplt2c_swe_checkpoints,"De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter.
+
+Men det finns några som är värda ett besök för sig själva. Till exempel Stockholmsoperan och Kungliga slottet.
+
+Det är också värt att se Skansen, ett friluftsmuseum med gamla träbyggnader från 1600-talet. Det ligger nära Kungliga slottet. Du kan hitta mer information om museerna på vår sida om Stockholm.
+
+Om du har ont om tid kan du också prova att vandra längs Stockholms skogsväg. Denna vandring tar dig till ett antal pittoreska platser i staden. Det finns många av dessa stigar runt om i Stockholm.
+
+Stockholm är också känd för sina många parker och trädgårdar. Parken vid Stockholms zoo är särskilt populär bland turister. Många andra parker finns också runt om i staden.
+
+Staden har ett bra transportsystem, vilket gör det enkelt","De bästa sevärdheterna i Stockholm är mycket populära, så du kommer att ha svårt att välja bara en eller två sevärdheter. Det är därför vi har gjort en lista över de 25 bästa sevärdheterna i Stockholm för att ge dig den ultimata guiden till Stockholms bästa sevärdheter.
+Här är våra toppval av de 25 bästa sevärdheterna i Stockholm:
+1. Gamla stan (Stockholm)
+Gamla stan är en av de mest kända och besökta sevärdheterna i Stockholm, och det finns ingen bättre plats att börja din sightseeing på än den här historiska platsen. Gamla stan ligger mitt i staden, vilket gör den till en perfekt startpunkt för sightseeing, oavsett om du planerar att utforska hela Gamla stan eller bara några av dess distrikt.
+Denna stadskärna har flera viktiga landmärken som Riddarholmen och Stortorget, som båda ligger inom gångavstånd från Gamla stan.
+Dessutom erbjuder Gamla",False,Left,MultiSynt
+2025-11-28 10:55:56.038055,Finnish,"Terve, miten menee?",MultiSynt/nemotron-cc-finnish-tower9b,HPLT/hplt2c_fin_checkpoints,"Terve, miten menee?
+
+2018-04-06 15:36:27
+
+Hei! Miten voit tänään? Toivon sinulle hyvää terveyttä ja onnellisuutta. Miten voit?","Terve, miten menee?
+Terve, miten menee? -palvelun kautta voit kysyä ja keskustella terveydestäsi tai hyvinvoinnistasi. Kysymyksiin vastaavat terveydenhuollon ammattilaiset.
+Miksi terveyskysely on olemassa?
+Terveyskyselyn avulla voit selvittää, millaista tukea ja apua tarvitset voidaksesi paremmin. Kyselyssä kartoitetaan mm. elintapoja, terveystottumuksia, sosiaalista tilannetta, koettua terveyttä ja voimavaroja sekä työ- ja toimintakykyä.
+Miten täytän terveyskyselyn?
+Voit täyttää kyselyn tietokoneella, tabletilla tai älypuhelimella. Voit myös tulostaa lomakkeen paperille. Tulosteesta ei voi tunnistaa sinua henkilökoht",True,Left,HPLT
+2025-11-28 10:56:25.602809,Finnish,"Terve, miten menee?",MultiSynt/nemotron-cc-finnish-tower9b,HPLT/hplt2c_fin_checkpoints,"Terve, miten menee?
+
+2018-04-06 15:36:27
+
+Hei! Miten voit tänään? Toivon sinulle hyvää terveyttä ja onnellisuutta. Miten voit?","Terve, miten menee?
+Terve, miten menee? -palvelun kautta voit kysyä ja keskustella terveydestäsi tai hyvinvoinnistasi. Kysymyksiin vastaavat terveydenhuollon ammattilaiset.
+Miksi terveyskysely on olemassa?
+Terveyskyselyn avulla voit selvittää, millaista tukea ja apua tarvitset voidaksesi paremmin. Kyselyssä kartoitetaan mm. elintapoja, terveystottumuksia, sosiaalista tilannetta, koettua terveyttä ja voimavaroja sekä työ- ja toimintakykyä.
+Miten täytän terveyskyselyn?
+Voit täyttää kyselyn tietokoneella, tabletilla tai älypuhelimella. Voit myös tulostaa lomakkeen paperille. Tulosteesta ei voi tunnistaa sinua henkilökoht",True,Left,HPLT
