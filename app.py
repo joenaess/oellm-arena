@@ -11,7 +11,7 @@ RESULTS_FILE = "arena_results.csv"
 
 st.set_page_config(layout="wide", page_title="OELLM Arena")
 
-# --- EXAMPLE PROMPTS DATABASE (Continuation focused) ---
+# --- EXAMPLE PROMPTS DATABASE ---
 EXAMPLE_PROMPTS = {
     "Icelandic": [
         "Einu sinni var lítill strákur sem bjó í ",
@@ -102,52 +102,55 @@ if 'current_language' not in st.session_state:
 if 'prompt_text' not in st.session_state:
     st.session_state.prompt_text = ""
 
+# --- CALLBACKS (CRITICAL FOR STABILITY) ---
+def update_language():
+    """Reset everything when language changes"""
+    st.session_state.generated = False
+    st.session_state.vote_submitted = False
+    st.session_state.prompt_text = "" 
+
+def reset_round():
+    """Reset everything for a new round"""
+    st.session_state.generated = False
+    st.session_state.vote_submitted = False
+    st.session_state.prompt_text = ""
+
+def set_prompt_callback(text):
+    """Set prompt safely"""
+    st.session_state.prompt_text = text
+
 # --- SIDEBAR: SETUP ---
 st.sidebar.title("⚙️ Configuration")
 st.sidebar.markdown("Choose a language to begin.")
 
-# Select Language
-selected_language = st.sidebar.selectbox(
+# Select Language with CALLBACK
+st.sidebar.selectbox(
     "Select Language", 
     sorted(list(MODELS_DB.keys())),
-    index=sorted(list(MODELS_DB.keys())).index(st.session_state.current_language) if st.session_state.current_language in MODELS_DB else 0
+    key="current_language", 
+    on_change=update_language 
 )
-
-# Update language in session if changed
-if selected_language != st.session_state.current_language:
-    st.session_state.current_language = selected_language
-    st.session_state.generated = False
-    st.session_state.prompt_text = "" 
-    st.rerun()
+selected_language = st.session_state.current_language
 
 st.sidebar.divider()
 
 # --- ADVANCED PARAMETERS ---
 with st.sidebar.expander("🛠️ Generation Settings", expanded=False):
     st.caption("Adjust these to ensure fair comparisons.")
-    
-    # Min New Tokens: Critical for base models to ensure they don't stop early
-    min_tokens = st.slider("Min New Tokens", 10, 100, 30, help="Forces the model to write at least this many words. Prevents one model from outputting 'Yes' while the other writes a novel.")
-    
-    # Max New Tokens
-    max_tokens = st.slider("Max New Tokens", 50, 512, 256, help="Maximum length of the generated response.")
-    
-    # Repetition Penalty: Base models love to repeat loops. 1.2 is usually safer than 1.0
-    rep_penalty = st.slider("Repetition Penalty", 1.0, 2.0, 1.2, step=0.05, help="Higher values prevent the model from repeating the same sentence.")
-    
-    # Temperature
-    temperature = st.slider("Temperature", 0.1, 1.5, 0.7, step=0.1, help="Creativity. Lower is more deterministic.")
-
+    min_tokens = st.slider("Min New Tokens", 10, 100, 30)
+    max_tokens = st.slider("Max New Tokens", 50, 512, 256)
+    rep_penalty = st.slider("Repetition Penalty", 1.0, 2.0, 1.2, step=0.05)
+    temperature = st.slider("Temperature", 0.1, 1.5, 0.7, step=0.1)
 
 # --- MAIN PAGE ---
 st.title("⚔️ OELLM Arena")
 st.markdown(f"**Current Language:** {selected_language}")
 
-# --- 1. MODEL NATURE DISCLAIMER ---
+# --- 1. DISCLAIMER ---
 with st.expander("ℹ️ **READ THIS FIRST: How to prompt Base Models**", expanded=True):
     st.markdown("""
     **These are Monolingual Base Models, not Chatbots.**
-    * 🚫 **Don't ask questions** (e.g., *"What is the capital of Sweden?"*). They may get confused or just repeat the question.
+    * 🚫 **Don't ask questions** (e.g., *"What is the capital of Sweden?"*).
     * ✅ **DO write the start of a sentence** (e.g., *"The capital of Sweden is Stockholm, which is famous for..."*).
     * **Think "Auto-Complete":** You start the story, the AI finishes it.
     """)
@@ -157,15 +160,13 @@ st.markdown("### ✍️ Start writing or choose an example")
 cols = st.columns(3)
 example_list = EXAMPLE_PROMPTS.get(selected_language, ["", "", ""])
 
-def set_prompt(text):
-    st.session_state.prompt_text = text
-
+# Buttons with CALLBACKS
 if cols[0].button("📖 Story Starter", use_container_width=True):
-    set_prompt(example_list[0])
+    set_prompt_callback(example_list[0])
 if cols[1].button("🧠 Fact Completion", use_container_width=True):
-    set_prompt(example_list[1])
+    set_prompt_callback(example_list[1])
 if cols[2].button("🍳 Recipe/List", use_container_width=True):
-    set_prompt(example_list[2])
+    set_prompt_callback(example_list[2])
 
 # --- 3. INPUT AREA ---
 user_prompt = st.text_area("Your Prompt (Start a sentence...):", key="prompt_text", height=100)
@@ -178,7 +179,7 @@ if st.button("Generate Response", type="primary"):
         st.session_state.last_winner = ""
         
         with st.spinner('Selecting models and generating...'):
-            # 1. Randomize display order
+            # 1. Randomize
             st.session_state.swap_models = random.choice([True, False])
             
             # 2. Select Models
@@ -188,7 +189,7 @@ if st.button("Generate Response", type="primary"):
             
             # 3. Generate
             try:
-                # Load A (MultiSynt) on GPU 0
+                # GPU 0 -> MultiSynt
                 pipe_a = get_pipeline(chosen_multisynt, 0)
                 res_a = generate_text(pipe_a, user_prompt, 
                                     min_new_tokens=min_tokens,
@@ -196,7 +197,7 @@ if st.button("Generate Response", type="primary"):
                                     repetition_penalty=rep_penalty,
                                     temperature=temperature)
                 
-                # Load B (HPLT) on GPU 1
+                # GPU 1 -> HPLT
                 pipe_b = get_pipeline(chosen_hplt, 1)
                 res_b = generate_text(pipe_b, user_prompt,
                                     min_new_tokens=min_tokens,
@@ -306,12 +307,9 @@ if st.session_state.vote_submitted:
     with col2:
         st.markdown(f"**HPLT Model (B)**")
         st.code(clean_name(st.session_state.model_b_name))
-            
-    if st.button("Start New Round", type="primary"):
-        st.session_state.generated = False
-        st.session_state.vote_submitted = False
-        st.session_state.prompt_text = ""
-        st.rerun()
+    
+    # CRITICAL FIX: The button now triggers the reset callback instead of running unsafe logic
+    st.button("Start New Round", type="primary", on_click=reset_round)
 
 # --- RESULTS ANALYSIS ---
 st.divider()
