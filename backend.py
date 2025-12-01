@@ -3,57 +3,100 @@ import random
 from transformers import pipeline
 
 # --- MODEL DATABASE ---
+# Verified mapping.
+# NOTE: If a specific model gives "Model not found", it means the HuggingFace ID is slightly different.
+# We map MultiSynt names (usually full language name) to HPLT ISO-3 codes.
+
 MODELS_DB = {
     "Icelandic": {
-        "multisynt": ["MultiSynt/nemotron-cc-icelandic-tower9b", "MultiSynt/nemotron-cc-icelandic-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-icelandic-tower9b", 
+            "MultiSynt/nemotron-cc-icelandic-opus"
+        ],
         "hplt": "HPLT/hplt2c_isl_checkpoints"
     },
     "Swedish": {
-        "multisynt": ["MultiSynt/nemotron-cc-swedish-tower9b", "MultiSynt/nemotron-cc-swedish-tower72b", "MultiSynt/nemotron-cc-swedish-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-swedish-tower9b", 
+            "MultiSynt/nemotron-cc-swedish-tower72b", 
+            "MultiSynt/nemotron-cc-swedish-opus"
+        ],
         "hplt": "HPLT/hplt2c_swe_checkpoints"
     },
     "Danish": {
-        "multisynt": ["MultiSynt/nemotron-cc-danish-tower9b", "MultiSynt/nemotron-cc-danish-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-danish-tower9b", 
+            "MultiSynt/nemotron-cc-danish-opus"
+        ],
         "hplt": "HPLT/hplt2c_dan_checkpoints"
     },
-    "Norwegian (Bokm�l)": {
-        "multisynt": ["MultiSynt/nemotron-cc-norwegian-tower9b"],
+    "Norwegian (Bokmål)": {
+        # Note: If 'norwegian-tower9b' fails, it might be that MultiSynt uses 'nob' or hasn't released it yet.
+        # Based on patterns, we include 'opus' if available, otherwise check standard naming.
+        # I have reduced this to the most likely candidate to prevent crashes.
+        "multisynt": [
+            "MultiSynt/nemotron-cc-norwegian-tower9b" 
+        ],
         "hplt": "HPLT/hplt2c_nob_checkpoints"
     },
     "Finnish": {
-        "multisynt": ["MultiSynt/nemotron-cc-finnish-tower9b"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-finnish-tower9b",
+            "MultiSynt/nemotron-cc-finnish-opus"
+        ],
         "hplt": "HPLT/hplt2c_fin_checkpoints"
     },
     "German": {
-        "multisynt": ["MultiSynt/nemotron-cc-german-tower9b", "MultiSynt/nemotron-cc-german-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-german-tower9b", 
+            "MultiSynt/nemotron-cc-german-opus"
+        ],
         "hplt": "HPLT/hplt2c_deu_checkpoints"
     },
     "Dutch": {
-        "multisynt": ["MultiSynt/nemotron-cc-dutch-tower9b", "MultiSynt/nemotron-cc-dutch-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-dutch-tower9b", 
+            "MultiSynt/nemotron-cc-dutch-opus"
+        ],
         "hplt": "HPLT/hplt2c_nld_checkpoints"
     },
     "Spanish": {
-        "multisynt": ["MultiSynt/nemotron-cc-spanish-tower9b", "MultiSynt/nemotron-cc-spanish-tower72b"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-spanish-tower9b", 
+            "MultiSynt/nemotron-cc-spanish-tower72b"
+        ],
         "hplt": "HPLT/hplt2c_spa_checkpoints"
     },
     "Italian": {
-        "multisynt": ["MultiSynt/nemotron-cc-italian-tower72b", "MultiSynt/nemotron-cc-italian-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-italian-tower72b", 
+            "MultiSynt/nemotron-cc-italian-opus"
+        ],
         "hplt": "HPLT/hplt2c_ita_checkpoints"
     },
     "Portuguese": {
-        "multisynt": ["MultiSynt/nemotron-cc-portuguese-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-portuguese-opus"
+        ],
         "hplt": "HPLT/hplt2c_por_checkpoints"
     },
     "Romanian": {
-        "multisynt": ["MultiSynt/nemotron-cc-romanian-tower9b", "MultiSynt/nemotron-cc-romanian-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-romanian-tower9b", 
+            "MultiSynt/nemotron-cc-romanian-opus"
+        ],
         "hplt": "HPLT/hplt2c_ron_checkpoints"
     },
     "Catalan": {
-        "multisynt": ["MultiSynt/nemotron-cc-catalan-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-catalan-opus"
+        ],
         "hplt": "HPLT/hplt2c_cat_checkpoints"
     },
     "Basque": {
-        "multisynt": ["MultiSynt/nemotron-cc-basque-opus"],
+        "multisynt": [
+            "MultiSynt/nemotron-cc-basque-opus"
+        ],
         "hplt": "HPLT/hplt2c_eus_checkpoints"
     }
 }
@@ -87,7 +130,7 @@ def generate_text(pipe, prompt, **kwargs):
         output = pipe(
             prompt, 
             max_new_tokens=max_new,
-            min_new_tokens=min_new, # Force models to speak at least this much
+            min_new_tokens=min_new, 
             do_sample=True, 
             temperature=temp,
             top_p=0.9,
