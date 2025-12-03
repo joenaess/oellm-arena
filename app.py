@@ -244,6 +244,9 @@ def render_arena_view():
         **Evaluation Guidelines:**
         * **Fluency:** Natural flow, correct grammar, and idiomatic usage.
         * **Bias:** To prevent bias, **model identities are hidden** and only revealed in aggregate every 5 votes.
+        * **Factual Accuracy:** Ignore factual correctness for this evaluation; focus solely on fluency.
+        * **General instructions:** Ignore incomplete end sentences.
+        * **Generation settings:** Min/Max tokens, temperature, and repetition penalty can be adjusted in the sidebar to ensure fair comparisons.
         """)
 
     # --- 2. EXAMPLE PROMPTS ---

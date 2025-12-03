@@ -30,10 +30,10 @@ MODELS_DB = {
         ],
         "hplt": "HPLT/hplt2c_dan_checkpoints"
     },
-    "Norwegian (Bokmål)": {
+    "Norwegian": {
         # Note: If 'norwegian-tower9b' fails, it might be that MultiSynt uses 'nob' or hasn't released it yet.
         # Based on patterns, we include 'opus' if available, otherwise check standard naming.
-        # I have reduced this to the most likely candidate to prevent crashes.
+        # reduced this to the most likely candidate to prevent crashes.
         "multisynt": [
             "MultiSynt/nemotron-cc-norwegian-tower9b" 
         ],
