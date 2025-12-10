@@ -78,6 +78,11 @@ EXAMPLE_PROMPTS = {
         "Bazen behin, mendi altu baten gailurrean, ",
         "Euskararen jatorria ezezaguna da, baina ",
         "Marmitakoa prestatzeko osagaiak hauek dira: "
+    ],
+    "Multilingual-Exp": [
+        "The future of artificial intelligence in Europe depends on ",
+        "Once upon a time in a digital world, there was ",
+        "Here is a summary of the difference between synthetic and native data: "
     ]
 }
 
@@ -231,6 +236,8 @@ def render_arena_view():
     """Renders the main voting arena"""
     st.title("⚔️ OELLM Arena")
     st.markdown(f"**Current Language:** {st.session_state.current_language}")
+    if st.session_state.current_language == "Multilingual-Exp":
+        st.warning("⚠️ **Special Matchup:** For this experiment, 'HPLT' represents the **Native Mixture** model, and 'MultiSynt' represents the **Tower9b Mixture** model.")
 
     # --- 1. DISCLAIMER ---
     with st.expander("ℹ️ **READ THIS FIRST: How to prompt Base Models**", expanded=True):

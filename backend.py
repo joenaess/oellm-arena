@@ -98,8 +98,15 @@ MODELS_DB = {
             "MultiSynt/nemotron-cc-basque-opus"
         ],
         "hplt": "HPLT/hplt2c_eus_checkpoints"
+    },
+    "Multilingual-Exp": {
+        "multisynt": [
+            "MultiSynt/2B-1TT-tower9b-mixture"  # Treated as Model A (The enhanced model)
+        ],
+        "hplt": "MultiSynt/2B-1TT-native-mixture"  # Treated as Model B (The reference/native model)
     }
 }
+
 
 def get_pipeline(model_name, device_id):
     """
