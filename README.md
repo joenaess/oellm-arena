@@ -39,17 +39,20 @@ The arena supports 13+ languages across multiple families:
    git clone \[https://github.com/your-username/oellm-arena.git\](https://github.com/your-username/oellm-arena.git)  
    cd oellm-arena
 
-2. **Create a virtual environment (using uv or venv):**  
-   \# Using uv (Recommended)  
-   uv venv  
+3. **Install dependencies with uv:**
+   ```bash
+   # Install uv if not already installed
+   pip install uv
+
+   # Initialize and sync dependencies
+   uv sync
    source .venv/bin/activate
+   ```
 
-   \# OR using standard venv  
-   python3 \-m venv venv  
-   source venv/bin/activate
-
-3. **Install dependencies:**  
-   pip install \-r requirements.txt
+   *Alternatively, using standard pip:*
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## **🚀 Usage**
 
@@ -57,6 +60,20 @@ The arena supports 13+ languages across multiple families:
 
 To run the app on your local machine for testing:  
 streamlit run app.py
+
+### **Automated Backend Benchmark**
+
+To run the automated model comparison script which generates responses for all languages (or a limit):
+
+```bash
+# Run for all languages
+uv run python benchmark_backend.py
+
+# Run for a specific number of languages (e.g., test 1)
+uv run python benchmark_backend.py --limit 1
+```
+
+Results are saved to `backend_benchmark_results.csv`.
 
 ### **Server Production (with Sub-path)**
 
