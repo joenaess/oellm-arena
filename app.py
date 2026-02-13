@@ -251,8 +251,10 @@ def render_arena_view():
                     del pipe_a
                     del pipe_b
                     import torch
-
+                    import gc
+                    
                     torch.cuda.empty_cache()
+                    gc.collect()
 
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
