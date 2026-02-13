@@ -24,6 +24,9 @@ Here are the current standings and activity in the OELLM Arena:
 ### **Win Rate by Language**
 ![Win Rate by Language](assets/win_rate_by_language.png)
 
+### **Total Votes by Language**
+![Total Votes by Language](assets/votes_count_by_language.png)
+
 ### **Votes Over Time**
 ![Votes Over Time](assets/votes_over_time.png)
 

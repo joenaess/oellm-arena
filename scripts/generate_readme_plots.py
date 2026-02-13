@@ -64,6 +64,26 @@ def generate_plots():
     except Exception as e:
         print(f"Error generating time series plot: {e}")
 
+    # --- Plot 3: Total Votes by Language ---
+    print("Generating Total Votes by Language plot...")
+    plt.figure(figsize=(10, 6))
+
+    vote_counts = df["Language"].value_counts().sort_values(ascending=True)
+    
+    # Plotting
+    ax = vote_counts.plot(kind='barh', color='skyblue')
+    plt.title("Total Votes by Language")
+    plt.xlabel("Number of Votes")
+    plt.ylabel("Language")
+    
+    # Add count labels to the end of each bar
+    for i, v in enumerate(vote_counts):
+        ax.text(v, i, " " + str(v), color='black', va='center')
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(ASSETS_DIR, "votes_count_by_language.png"), dpi=300)
+    plt.close()
+
     print("Plots generated successfully in 'assets/' directory.")
 
 if __name__ == "__main__":
