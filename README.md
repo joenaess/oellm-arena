@@ -17,6 +17,16 @@ The application is designed for GPU-accelerated servers (Dual L4 GPUs recommende
 * **Live Analytics:** Visualizes win rates by language and by model architecture (e.g., Opus vs Tower).  
 * **Persistent Logging:** All prompts, generated responses, and user votes are saved to arena\_results.csv for linguistic analysis.
 
+## **📊 Arena Statistics**
+
+Here are the current standings and activity in the OELLM Arena:
+
+### **Win Rate by Language**
+![Win Rate by Language](assets/win_rate_by_language.png)
+
+### **Votes Over Time**
+![Votes Over Time](assets/votes_over_time.png)
+
 ## **🌍 Supported Languages**
 
 The arena supports 13+ languages across multiple families:
