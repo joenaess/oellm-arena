@@ -6,6 +6,12 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
+import gc
+import torch
+
+# Clear cache on startup to avoid lingering memory from previous runs
+torch.cuda.empty_cache()
+gc.collect()
 
 from backend import generate_text, get_pipeline
 from config import EXAMPLE_PROMPTS, MODELS_DB
@@ -222,39 +228,41 @@ def render_arena_view():
                 chosen_hplt = MODELS_DB[st.session_state.current_language]["hplt"]
 
                 try:
-                    pipe_a = get_pipeline(chosen_multisynt, 0)
+                    # --- MODEL A ---
+                    pipe_a = get_pipeline(chosen_multisynt, 0) # device_id ignored by backend now
                     res_a = generate_text(
                         pipe_a,
                         user_prompt,
                         min_new_tokens=st.session_state.min_tokens,
                         max_new_tokens=st.session_state.max_tokens,
-                        repetition_penalty=st.session_state.rep_penalty,
                         temperature=st.session_state.temperature,
+                        repetition_penalty=st.session_state.rep_penalty,
                     )
+                    del pipe_a
+                    import gc
+                    import torch
+                    torch.cuda.empty_cache()
+                    gc.collect()
 
-                    pipe_b = get_pipeline(chosen_hplt, 1)
+                    # --- MODEL B ---
+                    pipe_b = get_pipeline(chosen_hplt, 1) # device_id ignored
                     res_b = generate_text(
                         pipe_b,
                         user_prompt,
                         min_new_tokens=st.session_state.min_tokens,
                         max_new_tokens=st.session_state.max_tokens,
-                        repetition_penalty=st.session_state.rep_penalty,
                         temperature=st.session_state.temperature,
+                        repetition_penalty=st.session_state.rep_penalty,
                     )
+                    del pipe_b
+                    torch.cuda.empty_cache()
+                    gc.collect()
 
                     st.session_state.model_a_name = chosen_multisynt
                     st.session_state.model_b_name = chosen_hplt
                     st.session_state.output_a = res_a
                     st.session_state.output_b = res_b
                     st.session_state.generated = True
-
-                    del pipe_a
-                    del pipe_b
-                    import torch
-                    import gc
-                    
-                    torch.cuda.empty_cache()
-                    gc.collect()
 
                 except Exception as e:
                     st.error(f"An error occurred: {e}")

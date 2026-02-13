@@ -13,7 +13,6 @@ MODELS_DB = {
     "Swedish": {
         "multisynt": [
             "MultiSynt/nemotron-cc-swedish-tower9b",
-            "MultiSynt/nemotron-cc-swedish-tower72b",
             "MultiSynt/nemotron-cc-swedish-opus",
         ],
         "hplt": "HPLT/hplt2c_swe_checkpoints",
@@ -42,11 +41,11 @@ MODELS_DB = {
         "hplt": "HPLT/hplt2c_nld_checkpoints",
     },
     "Spanish": {
-        "multisynt": ["MultiSynt/nemotron-cc-spanish-tower9b", "MultiSynt/nemotron-cc-spanish-tower72b"],
+        "multisynt": ["MultiSynt/nemotron-cc-spanish-tower9b"],
         "hplt": "HPLT/hplt2c_spa_checkpoints",
     },
     "Italian": {
-        "multisynt": ["MultiSynt/nemotron-cc-italian-tower72b", "MultiSynt/nemotron-cc-italian-opus"],
+        "multisynt": ["MultiSynt/nemotron-cc-italian-opus"],
         "hplt": "HPLT/hplt2c_ita_checkpoints",
     },
     "Portuguese": {"multisynt": ["MultiSynt/nemotron-cc-portuguese-opus"], "hplt": "HPLT/hplt2c_por_checkpoints"},

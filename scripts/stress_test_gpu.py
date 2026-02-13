@@ -29,20 +29,23 @@ def reproduce_stress():
             for i in range(5):
                 print(f"  Iteration {i+1}/5...")
                 try:
-                    print(f"    Loading {model_a} on GPU 0...")
+                    print(f"    Loading {model_a} with device_map='auto'...")
                     pipe_a = get_pipeline(model_a, 0)
                     print("    Generating A...")
                     res_a = generate_text(pipe_a, prompt, **params)
                     print(f"    Result A length: {len(res_a)}")
                     
-                    print(f"    Loading {model_b} on GPU 1...") # Assuming 2 GPUs
+                    del pipe_a
+                    torch.cuda.empty_cache()
+                    gc.collect()
+                    
+                    print(f"    Loading {model_b} with device_map='auto'...") 
                     pipe_b = get_pipeline(model_b, 1)
                     print("    Generating B...")
                     res_b = generate_text(pipe_b, prompt, **params)
                     print(f"    Result B length: {len(res_b)}")
                     
                     # Cleanup
-                    del pipe_a
                     del pipe_b
                     torch.cuda.empty_cache()
                     gc.collect()

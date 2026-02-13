@@ -13,14 +13,17 @@ def get_pipeline(model_name, device_id):
         "text-generation", 
         model=model_name, 
         device_map="auto", 
-        torch_dtype=torch.bfloat16, 
-        model_kwargs={"attn_implementation": "eager"},
+        torch_dtype=torch.float32, 
+        model_kwargs={"attn_implementation": "sdpa"},
         trust_remote_code=True
     )
     
     # Critical fix for models without pad_token
     if pipe.tokenizer.pad_token_id is None:
         pipe.tokenizer.pad_token_id = pipe.tokenizer.eos_token_id
+        
+    # FORCE LEFT PADDING for decoder-only generation to avoid shape errors
+    pipe.tokenizer.padding_side = "left"
         
     return pipe
 
@@ -37,12 +40,13 @@ def generate_text(pipe, prompt, **kwargs):
         rep_pen = kwargs.get("repetition_penalty", 1.15)
         
         # Ensure we don't pass 'max_length' if 'max_new_tokens' is present
-        # The pipeline might have defaults in model_kwargs
+        # and explicitly disable it to prevent config defaults from causing issues
         
         output = pipe(
             prompt,
             max_new_tokens=max_new,
             min_new_tokens=min_new,
+            max_length=None, # Explicitly unset max_length default
             do_sample=True,
             temperature=temp,
             top_p=0.9,
