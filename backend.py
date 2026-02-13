@@ -9,7 +9,12 @@ def get_pipeline(model_name, device_id):
     print(f"Loading {model_name} on GPU {device_id}...")
 
     pipe = pipeline(
-        "text-generation", model=model_name, device=device_id, torch_dtype=torch.bfloat16, trust_remote_code=True
+        "text-generation", 
+        model=model_name, 
+        device=device_id, 
+        torch_dtype=torch.float32, 
+        model_kwargs={"attn_implementation": "eager"},
+        trust_remote_code=True
     )
     return pipe
 

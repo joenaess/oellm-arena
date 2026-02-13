@@ -20,7 +20,8 @@ def test_get_pipeline(mock_pipeline):
         "text-generation",
         model=model_name,
         device=device_id,
-        torch_dtype=pytest.importorskip("torch").bfloat16,
+        torch_dtype=pytest.importorskip("torch").float32,
+        model_kwargs={"attn_implementation": "eager"},
         trust_remote_code=True,
     )
     assert pipe == mock_pipe_instance
