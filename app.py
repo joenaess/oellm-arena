@@ -6,14 +6,8 @@ from datetime import datetime
 
 import pandas as pd
 import streamlit as st
-import gc
-import torch
+import subprocess
 
-# Clear cache on startup to avoid lingering memory from previous runs
-torch.cuda.empty_cache()
-gc.collect()
-
-from backend import generate_text, get_pipeline
 from config import EXAMPLE_PROMPTS, MODELS_DB
 
 RESULTS_FILE = "arena_results.csv"
@@ -228,35 +222,41 @@ def render_arena_view():
                 chosen_hplt = MODELS_DB[st.session_state.current_language]["hplt"]
 
                 try:
+                    def build_slurm_cmd(model_name):
+                        return [
+                            "srun", "--gpus=1",
+                            "uv", "run", "python", "backend.py",
+                            "--model_name", model_name,
+                            "--prompt", user_prompt,
+                            "--min_new_tokens", str(st.session_state.min_tokens),
+                            "--max_new_tokens", str(st.session_state.max_tokens),
+                            "--temperature", str(st.session_state.temperature),
+                            "--repetition_penalty", str(st.session_state.rep_penalty)
+                        ]
+
                     # --- MODEL A ---
-                    pipe_a = get_pipeline(chosen_multisynt, 0) # device_id ignored by backend now
-                    res_a = generate_text(
-                        pipe_a,
-                        user_prompt,
-                        min_new_tokens=st.session_state.min_tokens,
-                        max_new_tokens=st.session_state.max_tokens,
-                        temperature=st.session_state.temperature,
-                        repetition_penalty=st.session_state.rep_penalty,
-                    )
-                    del pipe_a
-                    import gc
-                    import torch
-                    torch.cuda.empty_cache()
-                    gc.collect()
+                    cmd_a = build_slurm_cmd(chosen_multisynt)
+                    process_a = subprocess.Popen(cmd_a, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                     # --- MODEL B ---
-                    pipe_b = get_pipeline(chosen_hplt, 1) # device_id ignored
-                    res_b = generate_text(
-                        pipe_b,
-                        user_prompt,
-                        min_new_tokens=st.session_state.min_tokens,
-                        max_new_tokens=st.session_state.max_tokens,
-                        temperature=st.session_state.temperature,
-                        repetition_penalty=st.session_state.rep_penalty,
-                    )
-                    del pipe_b
-                    torch.cuda.empty_cache()
-                    gc.collect()
+                    cmd_b = build_slurm_cmd(chosen_hplt)
+                    process_b = subprocess.Popen(cmd_b, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+                    # Wait for both processes to finish and capture output
+                    stdout_a, stderr_a = process_a.communicate()
+                    stdout_b, stderr_b = process_b.communicate()
+
+                    if process_a.returncode != 0:
+                        st.error(f"Error generating from {chosen_multisynt}: {stderr_a}")
+                        res_a = f"Slurm Error: {stderr_a}"
+                    else:
+                        res_a = stdout_a.strip()
+
+                    if process_b.returncode != 0:
+                        st.error(f"Error generating from {chosen_hplt}: {stderr_b}")
+                        res_b = f"Slurm Error: {stderr_b}"
+                    else:
+                        res_b = stdout_b.strip()
 
                     st.session_state.model_a_name = chosen_multisynt
                     st.session_state.model_b_name = chosen_hplt

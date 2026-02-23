@@ -13,7 +13,8 @@ The application is designed for GPU-accelerated servers (Dual L4 GPUs recommende
 * **Language-First Workflow:** Users select a target language (e.g., Basque, Swedish, Italian) rather than specific models, ensuring unbiased evaluation.  
 * **Blind Evaluation:** Model identities are strictly hidden until the vote is cast.  
 * **Dynamic Matchups:** The system randomly selects specific architectures (e.g., MultiSynt Tower9b vs MultiSynt Opus) to compete against the HPLT reference model.  
-* **Dual-GPU Orchestration:** Efficiently maps Model A to GPU 0 and Model B to GPU 1\.  
+* **Slurm Inference Offloading:** Streamlit elegantly delegates large models to cluster jobs via `subprocess` and `srun`, allowing concurrent parallel loading of competing models directly to distributed execution resources.
+* **Dual-GPU Orchestration:** Efficiently maps Model A to GPU 0 and Model B to GPU 1 natively via isolated `-gpus=1` cluster jobs.
 * **Live Analytics:** Visualizes win rates by language and by model architecture (e.g., Opus vs Tower).  
 * **Persistent Logging:** All prompts, generated responses, and user votes are saved to arena\_results.csv for linguistic analysis.
 
@@ -43,7 +44,7 @@ The arena supports 13+ languages across multiple families:
 
 ### **Prerequisites**
 
-* **Hardware:** Linux server with NVIDIA GPUs (min. 2x L4 or A100 recommended for 24GB+ VRAM).  
+* **Hardware:** Linux server with NVIDIA GPUs managed by **Slurm** (min. 2x L4 or A100 recommended for 24GB+ VRAM). The `srun` CLI must be properly configured.
 * **Software:** Python 3.10+, CUDA drivers.
 
 ### **Setup**

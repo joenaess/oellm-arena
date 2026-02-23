@@ -1,3 +1,5 @@
+import argparse
+import sys
 import torch
 from transformers import pipeline
 
@@ -7,7 +9,8 @@ def get_pipeline(model_name, device_id):
     Loads a pipeline for a specific model.
     Ignores device_id and uses device_map="auto" to handle resource contention (e.g. vLLM on GPU 1).
     """
-    print(f"Loading {model_name} with device_map='auto'...")
+    # Write info messages to stderr so they don't corrupt stdout which is used for the generated text
+    print(f"Loading {model_name} with device_map='auto'...", file=sys.stderr)
 
     pipe = pipeline(
         "text-generation", 
@@ -55,4 +58,31 @@ def generate_text(pipe, prompt, **kwargs):
         )
         return output[0]["generated_text"]
     except Exception as e:
-        return f"Error generating text: {str(e)}"
+        print(f"Error generating text: {str(e)}", file=sys.stderr)
+        return ""
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate text using a specified model.")
+    parser.add_argument("--model_name", type=str, required=True, help="Hugging Face model ID or path.")
+    parser.add_argument("--prompt", type=str, required=True, help="Prompt text.")
+    parser.add_argument("--min_new_tokens", type=int, default=20)
+    parser.add_argument("--max_new_tokens", type=int, default=256)
+    parser.add_argument("--temperature", type=float, default=0.7)
+    parser.add_argument("--repetition_penalty", type=float, default=1.15)
+    
+    args = parser.parse_args()
+
+    pipe = get_pipeline(args.model_name, 0)
+    
+    result = generate_text(
+        pipe,
+        args.prompt,
+        min_new_tokens=args.min_new_tokens,
+        max_new_tokens=args.max_new_tokens,
+        temperature=args.temperature,
+        repetition_penalty=args.repetition_penalty
+    )
+    
+    # Print exactly the result to stdout for capture by the orchestrator
+    print(result)
